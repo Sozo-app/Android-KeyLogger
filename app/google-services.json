@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "381102790692",
-    "project_id": "androidkeylogger-a0635",
-    "storage_bucket": "androidkeylogger-a0635.appspot.com"
+    "project_number": "301023105175",
+    "project_id": "androidkeylogger-6f8dd",
+    "storage_bucket": "androidkeylogger-6f8dd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:381102790692:android:1f7033069591c81eba60b1",
+        "mobilesdk_app_id": "1:301023105175:android:6ede24c90969e2bedb99d2",
         "android_client_info": {
           "package_name": "com.azamovhudstc.androidkeylogger"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAr9jE9n12_1C4AV9IFA5lKqxsn1HMD78g"
+          "current_key": "AIzaSyBCy3aPmxf7v2adkOCbedXbnToXbLR8eic"
         }
       ],
       "services": {
