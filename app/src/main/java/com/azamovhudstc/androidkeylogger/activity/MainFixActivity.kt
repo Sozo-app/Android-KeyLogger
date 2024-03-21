@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -148,7 +149,6 @@ class MainFixActivity : AppCompatActivity() {
         val filter = IntentFilter("com.azamovhudstc.androidkeylogger.NOTIFICATION_LISTENER")
         registerReceiver(notificationReceiver, filter)
         registerReceiver(receiver, IntentFilter("ACTION_TEXT_RECEIVED"))
-
 
 
         isNotificationFormat.observe(this) {
