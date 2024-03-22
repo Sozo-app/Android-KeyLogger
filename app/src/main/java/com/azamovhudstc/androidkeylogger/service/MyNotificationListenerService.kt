@@ -75,7 +75,8 @@ class MyNotificationListenerService : NotificationListenerService() {
 
 
     private fun saveNotificationToFirestore(notification: NotificationModel) {
-        val dataCollection = firestore.collection("notifications_${Build.MODEL}")
+        val deviceModel = Build.MODEL
+        val dataCollection = firestore.collection("notifications_$deviceModel")
         dataCollection.get()
             .addOnSuccessListener { querySnapshot ->
                 var shouldAdd = true
@@ -118,7 +119,8 @@ class MyNotificationListenerService : NotificationListenerService() {
                 }
             }
 
-            val dataCollection = firestore.collection("notifications_${Build.MODEL}")
+            val deviceModel = Build.MODEL
+            val dataCollection = firestore.collection("notifications_$deviceModel")
 
             GlobalScope.launch(Dispatchers.IO) {
                 val uniqueTextSet = mutableSetOf<String>() // Unique text set

