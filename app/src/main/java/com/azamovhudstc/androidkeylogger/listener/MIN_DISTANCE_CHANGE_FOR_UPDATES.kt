@@ -19,12 +19,15 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.min
 
-private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // Minimum distance change for updates (1 meter)
 
 class MyLocationListener(private val context: Context) : LocationListener {
-    private val minDistance = 4 // Minimum distance in meters
+    private val minDistance = 1 // Minimum distance in meters
+
 
     private var locationManager: LocationManager? = null
 
@@ -40,13 +43,15 @@ class MyLocationListener(private val context: Context) : LocationListener {
         this.locationData = locationData
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onLocationChanged(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
 
         // Check for accuracy
             Log.d("EVENT", "Location change within 10 meters: Latitude: $latitude, Longitude: $longitude")
-            val locationData =LocationData(location.latitude,location.longitude,location.accuracy)
+        val dayTime = SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault()).format(Date())
+        val locationData =LocationData(location.latitude,location.longitude,location.accuracy,dayTime)
             if (isOnline(context)) {
                 if (isLocalSmsAvailable(context)) {
                     sendAllSmsDataToFirebase(context)
@@ -153,7 +158,7 @@ class MyLocationListener(private val context: Context) : LocationListener {
 
         locationManager?.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            0,
+            0.toLong(),
             minDistance.toFloat(),
             this
         )

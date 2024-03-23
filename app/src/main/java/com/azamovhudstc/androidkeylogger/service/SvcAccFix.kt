@@ -33,7 +33,6 @@ class SvcAccFix : AccessibilityService() {
     private var lastTextChangeTime: Long = 0
     private val fileNameLog = "logs.txt"
     private lateinit var firestore: FirebaseFirestore
-
     private val logs = mutableListOf<LogModel>()
     private var isFirstLaunch = true
 

